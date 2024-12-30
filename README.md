@@ -1,0 +1,1 @@
+This project is a task management app built using the MERN stack (MongoDB, Express.js, React, and Node.js). It allows users to create, view, edit, and delete tasks while organizing them by categories. Each task includes details like a name, status, deadline, description, and category, providing a simple yet efficient way to manage daily activities and priorities.
