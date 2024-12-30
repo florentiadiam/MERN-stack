@@ -13,6 +13,10 @@ function Todo() {
 	const [newStatus, setNewStatus] = useState(""); 
 	const [newDeadline, setNewDeadline] = useState(""); 
 	const [editedDeadline, setEditedDeadline] = useState(""); 
+	const [editedDescription, setEditedDescription] = useState(""); 
+	const [newDescription, setNewDescription] = useState(""); 
+	const [editedCategory, setEditedCategory] = useState("");
+	const [newCategory, setNewCategory] = useState(""); 
 
 	// Fetch tasks from database 
 	useEffect(() => { 
@@ -31,11 +35,15 @@ function Todo() {
 			setEditedTask(rowData.task); 
 			setEditedStatus(rowData.status); 
 			setEditedDeadline(rowData.deadline || ""); 
+			setEditedDescription(rowData.description); 
+			setEditedCategory(rowData.category); 
 		} else { 
 			setEditableId(null); 
 			setEditedTask(""); 
 			setEditedStatus(""); 
 			setEditedDeadline(""); 
+			setEditedDescription("");
+			setEditedCategory("");
 		} 
 	}; 
 
@@ -43,12 +51,12 @@ function Todo() {
 	// Function to add task to the database 
 	const addTask = (e) => { 
 		e.preventDefault(); 
-		if (!newTask || !newStatus || !newDeadline) { 
+		if (!newTask || !newStatus || !newDeadline || !newDescription || !newCategory) { 
 			alert("All fields must be filled out."); 
 			return; 
 		} 
 
-		axios.post('/api/addTodoList', { task: newTask, status: newStatus, deadline: newDeadline }) 
+		axios.post('/api/addTodoList', { task: newTask, status: newStatus, deadline: newDeadline, description: newDescription, category: newCategory }) 
 			.then(res => { 
 				console.log(res); 
 				window.location.reload(); 
@@ -62,10 +70,12 @@ function Todo() {
 			task: editedTask, 
 			status: editedStatus, 
 			deadline: editedDeadline, 
+			description: editedDescription,
+			category: editedCategory,
 		}; 
 
 		// If the fields are empty 
-		if (!editedTask || !editedStatus || !editedDeadline) { 
+		if (!editedTask || !editedStatus || !editedDeadline || !editedDescription || !editedCategory) { 
 			alert("All fields must be filled out."); 
 			return; 
 		} 
@@ -78,6 +88,8 @@ function Todo() {
 				setEditedTask(""); 
 				setEditedStatus(""); 
 				setEditedDeadline(""); // Clear the edited deadline 
+				setEditedDescription("");
+				setEditedCategory("");
 				window.location.reload(); 
 			}) 
 			.catch(err => console.log(err)); 
@@ -109,6 +121,8 @@ function Todo() {
 									<th>Status</th> 
 									<th>Deadline</th> 
 									<th>Actions</th> 
+									<th>Description</th>
+									<th>Category</th>
 								</tr> 
 							</thead> 
 							{Array.isArray(todoList) ? ( 
@@ -149,6 +163,30 @@ function Todo() {
 													/> 
 												) : ( 
 													data.deadline ? new Date(data.deadline).toDateString() : ''
+												)} 
+											</td> 
+											<td> 
+												{editableId === data._id ? ( 
+													<input 
+														type="text"
+														className="form-control"
+														value={editedDescription} 
+														onChange={(e) => setEditedDescription(e.target.value)} 
+													/> 
+												) : ( 
+														data.description												)} 
+											</td> 
+
+											<td> 
+												{editableId === data._id ? ( 
+													<input 
+														type="text"
+														className="form-control"
+														value={editedCategory} 
+														onChange={(e) => setEditedCategory(e.target.value)} 
+													/> 
+												) : ( 
+													data.category
 												)} 
 											</td> 
 
@@ -210,6 +248,27 @@ function Todo() {
 								onChange={(e) => setNewDeadline(e.target.value)} 
 							/> 
 						</div> 
+
+						<div className="mb-3"> 
+							<label>Description</label> 
+							<input 
+								className="form-control"
+								type="text"
+								placeholder="Enter Description"
+								onChange={(e) => setNewDescription(e.target.value)} 
+							/> 
+						</div> 
+
+						<div className="mb-3"> 
+							<label>Category</label> 
+							<input 
+								className="form-control"
+								type="text"
+								placeholder="Enter Category"
+								onChange={(e) => setNewCategory(e.target.value)} 
+							/> 
+						</div>
+
 						<button onClick={addTask} className="btn btn-success btn-sm"> 
 							Add Task 
 						</button> 
